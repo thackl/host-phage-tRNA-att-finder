@@ -1,23 +1,24 @@
 Link phages and host by finding potenial share attachment sites in host tRNAs.
 
-** TL;DR
+#+BEGIN_SRC sh
+# get it
+git clone https://github.com/thackl/host-phage-tRNA-att-finder
+
+# run it
+cd host-phage-tRNA-att-finder
+bin/host-phage-tRNA-att-finder host-contigs.fa phage-contigs.fa
+
+# test it on sample data (Prochlorococcus MED4 (host) and 2 cyanophages
+# with integrase gene and putative attachment site to tRNA-Leu(taa)
+bin/host-phage-tRNA-att-finder -o test-run data/MED4.fna data/P-SSP7-like.fna
+#+END_SRC
 
 *Requires*
 - blastn/makeblastdb, samtools, seqkit, aragorn
 - sed,sort
 
-#+BEGIN_SRC sh
-git clone https://github.com/thackl/host-phage-tRNA-att-finder
-cd host-phage-tRNA-att-finder
-
-bin/host-phage-tRNA-att-finder host-contigs.fa phage-contigs.fa
-
-# Test run (Prochlorococcus MED4 (host) and 2 cyanophages with integrase and
-# putative attachment site to tRNA-Leu
-bin/host-phage-tRNA-att-finder -o test-run data/MED4.fna data/P-SSP7-like.fna
-#+END_SRC
-
-Both phages have a 40bp exact match to the tRNA-Leu(taa) of MED4:
+** Output
+Blast table with potential attachment sites. Here it shows that both phages have a 40bp exact match to the tRNA-Leu(taa) of MED4:
 
 #+BEGIN_ASCII
 MED4_00626__tRNA-Leu(taa)       AY939843        100.000 40      0       0       1       40      5859    5898    5.06e-12        59.7
