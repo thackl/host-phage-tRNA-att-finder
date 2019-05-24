@@ -11,7 +11,7 @@ use List::Util qw(min max);
 
 GetOptions (
     "out-dir|o=s" => \(my $out = "host-phage-tRNA-att-finder-out"),
-    "trna|r=s" => \(my $host_trna_ffn),
+    "trna|r!" => \(my $host_is_trna),
     "threads|t=i" => \(my $threads = 4),
     "help|h!" => \(my $help),
     "debug|D!" => \(my $debug),
@@ -20,7 +20,7 @@ GetOptions (
 if ($help || @ARGV != 2){
     print "Link phages and potential host by finding shared integration attachment sites\n";
     print "Usage: host-phage-tRNA-att-finder [options] host-contigs.fna phage-contigs.fna\n";
-    printf " %-19s  %s\n", "-r/--trna", "tRNA fasta [predict from host contigs with Aragorn]";
+    printf " %-19s  %s\n", "-r/--trna", "treat host file as extracted tRNAs, skip prediction";
     printf " %-19s  %s\n", "-t/--threads", "number of threads to use in external commands";
     printf " %-19s  %s\n", "-o/--out", "write to this dir/prefix";
     printf " %-19s  %s\n", "-h/--help", "show this help";
@@ -31,13 +31,16 @@ if ($help || @ARGV != 2){
 
 my $host_fna = $ARGV[0];
 my $phage_fna = $ARGV[1];
-my $host_trna_bed;
+my ($host_trna_ffn, $host_trna_fna, $host_trna_bed);
     
 # setup out dir
 $out||=".";
 unless (-d $out) { mkdir $out or die $!; }
 
-if (!$host_trna_ffn) {
+
+if ($host_is_trna) {
+    $host_trna_ffn = $host_fna;
+} else {
     print STDERR "\nPredicting host tRNAs and tmRNAs\n";
     ($host_trna_bed, $host_trna_ffn) = predict_host_trnas($host_fna, "$out/host-tRNA"); 
 }

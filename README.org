@@ -7,6 +7,8 @@ git clone https://github.com/thackl/host-phage-tRNA-att-finder
 # run it
 cd host-phage-tRNA-att-finder
 bin/host-phage-tRNA-att-finder host-contigs.fa phage-contigs.fa
+# or with already extracted tRNAs
+bin/host-phage-tRNA-att-finder -r host-tRNAs.fa phage-contigs.fa
 
 # test it on sample data (Prochlorococcus MED4 (host) and 2 cyanophages
 # with integrase gene and putative attachment site to tRNA-Leu(taa)
