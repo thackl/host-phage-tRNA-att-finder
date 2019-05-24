@@ -1,4 +1,4 @@
-Link phages and host by finding potenial share attachment sites in host tRNAs.
+** Usage
 
 #+BEGIN_SRC sh
 # get it
@@ -20,7 +20,7 @@ bin/host-phage-tRNA-att-finder -o test-run data/MED4.fna data/P-SSP7-like.fna
 ** Output
 Blast table with potential attachment sites. Here it shows that both phages have a 40bp exact match to the tRNA-Leu(taa) of MED4:
 
-#+BEGIN_ASCII
+#+BEGIN_SRC
 MED4_00626__tRNA-Leu(taa)       AY939843        100.000 40      0       0       1       40      5859    5898    5.06e-12        59.7
 MED4_01491__tRNA-Leu(caa)       AY939843        87.179  39      5       0       1       39      5860    5898    2.50e-07        44.0
 MED4_00064__tRNA-Leu(aag)       AY939843        100.000 22      0       0       8       29      5866    5887    2.56e-04        34.0
@@ -31,7 +31,7 @@ MED4_01491__tRNA-Leu(caa)       GU071093        87.179  39      5       0       
 MED4_00064__tRNA-Leu(aag)       GU071093        100.000 22      0       0       8       29      4991    5012    2.56e-04        34.0
 MED4_00245__tRNA-Leu(tag)       GU071093        100.000 22      0       0       7       28      4991    5012    2.51e-04        34.0
 MED4_01810__tRNA-Arg(ccg)       GU071093        100.000 16      0       0       52      67      1651    1666    0.079   25.4
-#+END_ASCII
+#+END_SRC
 
 ** Description
 
