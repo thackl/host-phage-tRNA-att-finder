@@ -50,7 +50,7 @@ my $phage_trna_hits = scan_phages($phage_fna, $host_trna_ffn, "$out/phage-tRNA")
 
 print STDERR "\nGather top hits by phage:\n";
 my $phage_trna_hits_sorted = "$out/phage-tRNA-blast-by-phage.tsv";
-run(qq(grep -v '^#' $phage_trna_hits | sort -k2,2 -k12,12gr > $phage_trna_hits_sorted));
+run(qq(grep -v '^#' "$phage_trna_hits" | sort -k2,2 -k12,12gr > "$phage_trna_hits_sorted"));
 
 print "$phage_trna_hits_sorted\n";
 
@@ -58,12 +58,12 @@ print "$phage_trna_hits_sorted\n";
 sub scan_phages{
     my ($phage_fna, $host_trna_ffn, $pre) = @_;
 
-    run(qq(makeblastdb -dbtype nucl -in $phage_fna), 1);
+    run(qq(makeblastdb -dbtype nucl -in "$phage_fna"), 1);
     my $trna_blast_tsv = "$pre-blastn.tsv";
 
-    run(qq(blastn -num_threads $threads -task blastn -db $phage_fna \\
+    run(qq(blastn -num_threads $threads -task blastn -db "$phage_fna" \\
       -query $host_trna_ffn -reward 1 -penalty -1 -gapopen 2 -gapextend 1 \\
-      -perc_identity 80 -evalue 10e-2 -outfmt 7 >$trna_blast_tsv), 1);
+      -perc_identity 80 -evalue 10e-2 -outfmt 7 > "$trna_blast_tsv"), 1);
 
     return $trna_blast_tsv;
 }
@@ -95,7 +95,7 @@ sub predict_host_trnas{
     my $host_trna_ffn = "$pre.ffn";
     my $seq_len = get_seq_lengths($host_fna);
 
-    my $ver = qx(aragorn -h | grep -oPm1 "ARAGORN v\\K\\S+");
+    my $ver = qx(aragorn -h | perl -ne 'print \$1 if m{ARAGORN v([0-9\.]+)}');
     die $ver if $?;
     chomp($ver);
 
@@ -162,8 +162,20 @@ sub predict_host_trnas{
     close TRNABED;
 
     # extract tRNA seqs and fix IDs
-    run(qq(seqkit subseq --bed $host_trna_bed $host_fna -o $host_trna_ffn));
-    run(qq(sed -i '/^>/{s/_[^_]\\+ /__/}' $host_trna_ffn));
+    run(qq(seqkit subseq --bed "$host_trna_bed" "$host_fna" -o "$host_trna_ffn"),1);
+
+    rename $host_trna_ffn, "$host_trna_ffn.bak";
+    open TRNAFFN, "<$host_trna_ffn.bak";
+    open TRNAFFN_NEW, ">$host_trna_ffn";
+    while (<TRNAFFN>) {
+      if ($_ =~ /^>([^ ]+)_[^ ]+ (.+)/) {
+        print TRNAFFN_NEW ">$1__$2\n";
+      } else {
+        print TRNAFFN_NEW $_;
+      }
+    }
+    close TRNAFFN;
+    close TRNAFFN_NEW;
 
     return($host_trna_bed, $host_trna_ffn);
 }
